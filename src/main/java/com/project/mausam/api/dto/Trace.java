@@ -21,14 +21,9 @@ import lombok.Data;
 public class Trace {
 
     private String id;
-    private Long expiryInMinutes;
+    private int expiryInMinutes;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
-
-    @JsonProperty("id")
-    public String getId() {
-        return id;
-    }
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {

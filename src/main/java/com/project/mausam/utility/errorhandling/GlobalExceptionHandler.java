@@ -17,7 +17,7 @@ import com.project.mausam.api.dto.MausamApiResponse;
 public class GlobalExceptionHandler {
 	
 	public static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
+	
 	@ExceptionHandler(InvalidUnitsException.class)
 	public ResponseEntity<?> invalidUnitsExceptionHandler(InvalidUnitsException invalidUnitsException) {
 		logger.error("Error due to invalid units.", invalidUnitsException);
@@ -31,7 +31,8 @@ public class GlobalExceptionHandler {
 		logger.info(String.valueOf(httpClientErrorException.getStatusCode()));
 		logger.info(apiErrorMsg);
 		 if (httpClientErrorException.getStatusCode() == HttpStatus.NOT_FOUND && apiErrorMsg.toLowerCase().contains("city not found")) {
-			return getErrorResponse(HttpStatus.BAD_REQUEST, "City not found.", "Please check the city name and try again.");
+			ResponseEntity<?> errorResponse = getErrorResponse(HttpStatus.BAD_REQUEST, "City not found. ", "Please check the city name and try again.");
+			return errorResponse;
 		}
 		 return getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Some error occured.", "Please contact support.");
 	}
