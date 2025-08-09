@@ -2,6 +2,7 @@ package com.project.mausam.service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -13,6 +14,7 @@ import com.project.mausam.api.dto.CityMausamResponse;
 import com.project.mausam.api.dto.Humidity;
 import com.project.mausam.api.dto.Location;
 import com.project.mausam.api.dto.Temperature;
+import com.project.mausam.api.dto.Trace;
 import com.project.mausam.api.dto.Visibility;
 import com.project.mausam.api.dto.Weather;
 import com.project.mausam.api.dto.WeatherData;
@@ -25,15 +27,19 @@ import com.project.mausam.provider.openweather.dto.OpenWeatherUnits;
 import com.project.mausam.provider.openweather.dto.OpenWeatherWindSpeedEnum;
 import com.project.mausam.provider.openweather.dto.Sys;
 import com.project.mausam.provider.openweather.utility.OpenWeatherConstants;
+import com.project.mausam.utility.MausamConstants;
+import com.project.mausam.utility.RedisCacheUtil;
 import com.project.mausam.utility.errorhandling.InvalidUnitsException;
 
 
 public class OpenWeatherApiService implements WeatherApiService {
 	
-	OpenWeatherProperties openWeatherProperties;
+	final OpenWeatherProperties openWeatherProperties;
+	final RedisCacheUtil redisCacheUtil;
 	
-	public OpenWeatherApiService(OpenWeatherProperties openWeatherProperties) {
+	public OpenWeatherApiService(final OpenWeatherProperties openWeatherProperties, final RedisCacheUtil redisCacheUtil) {
 		this.openWeatherProperties = openWeatherProperties;
+		this.redisCacheUtil = redisCacheUtil;
 		System.out.println("OpenWeatherApi init");
 	}
 
@@ -122,7 +128,19 @@ public class OpenWeatherApiService implements WeatherApiService {
 		
 		weatherData.setWeather(weather);
 		mausamResponse.setWeatherData(weatherData);
+		
+		final String traceId = UUID.randomUUID().toString();
+		
+		final Trace trace = new Trace();		trace.setId(traceId);
+		trace.setExpiryInMinutes(MausamConstants.MAUSAM_CACHE_EXPIRY_TIME_IN_MINUTES);
+		mausamResponse.setTrace(trace);
+		
+		redisCacheUtil.addToCacheWithTtlInMinutes(MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, traceId,
+				mausamResponse, trace.getExpiryInMinutes());
+		
 		return mausamResponse;
 	}
+
+
 
 }
