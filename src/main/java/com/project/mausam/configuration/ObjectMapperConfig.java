@@ -26,9 +26,9 @@ public class ObjectMapperConfig {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//		mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, 
-//				ObjectMapper.DefaultTyping.NON_FINAL,
-//				JsonTypeInfo.As.PROPERTY);
+		mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, 
+				ObjectMapper.DefaultTyping.NON_FINAL,
+				JsonTypeInfo.As.PROPERTY);
 	    System.out.println("Custom Redis ObjectMapper hashCode: " + mapper.hashCode());
 
 		return mapper;
