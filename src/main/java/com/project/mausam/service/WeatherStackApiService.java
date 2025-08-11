@@ -1,7 +1,7 @@
 package com.project.mausam.service;
 
 import com.project.mausam.api.dto.CityMausamRequest;
-import com.project.mausam.api.dto.CityMausamResponse;
+import com.project.mausam.entity.Mausam;
 
 public class WeatherStackApiService implements WeatherApiService{
 	
@@ -10,7 +10,7 @@ public class WeatherStackApiService implements WeatherApiService{
 	}
 
 	@Override
-	public CityMausamResponse getCityWeather(CityMausamRequest cityMausamRequest) {
+	public Mausam getCityWeather(CityMausamRequest cityMausamRequest) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,10 +1,10 @@
 package com.project.mausam.service;
 
 import com.project.mausam.api.dto.CityMausamRequest;
-import com.project.mausam.api.dto.CityMausamResponse;
+import com.project.mausam.entity.Mausam;
 
 public interface WeatherApiService {
 	
-	CityMausamResponse getCityWeather(final CityMausamRequest cityMausamRequest);
+	Mausam getCityWeather(final CityMausamRequest cityMausamRequest);
 
 }
