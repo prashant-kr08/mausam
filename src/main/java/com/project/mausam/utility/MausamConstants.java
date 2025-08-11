@@ -6,5 +6,7 @@ public class MausamConstants {
 	public static final long MAUSAM_CACHE_DEFAULT_EXPIRY_TIME_IN_MINUTES = 1440;
 	public static final String MAUSAM_JSON_CACHE_NAMESPACE = "mausamJsonCache";
 	public static final String MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE = "mausamJsonCacheWithExpiry";
+	public static final String PROVIDER_OPEN_WEATHER = "OpenWeather";
+	public static final String PROVIDER_WEATHER_STACK = "WeatherStack";
 
 }

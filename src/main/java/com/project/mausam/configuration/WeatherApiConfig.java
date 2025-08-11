@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import com.project.mausam.provider.openweather.utility.OpenWeatherResponseParser;
 import com.project.mausam.service.OpenWeatherApiService;
 import com.project.mausam.service.WeatherApiService;
 import com.project.mausam.service.WeatherStackApiService;
-import com.project.mausam.utility.RedisCacheUtil;
 
 @Configuration
 public class WeatherApiConfig {
@@ -16,8 +16,8 @@ public class WeatherApiConfig {
 	@Bean
 	@ConditionalOnProperty(name = "openweather.enabled", havingValue = "true", matchIfMissing = true)
 	@Primary
-	public WeatherApiService openWeatherApiService(OpenWeatherProperties openWeatherProperties, RedisCacheUtil redisCacheUtil) {
-		return new OpenWeatherApiService(openWeatherProperties, redisCacheUtil);
+	public WeatherApiService openWeatherApiService(OpenWeatherProperties openWeatherProperties, OpenWeatherResponseParser openWeatherResponseParser) {
+		return new OpenWeatherApiService(openWeatherProperties, openWeatherResponseParser);
 	}
 	
 	@Bean
