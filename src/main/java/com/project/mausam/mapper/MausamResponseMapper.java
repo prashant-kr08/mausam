@@ -38,6 +38,7 @@ public class MausamResponseMapper {
 		location.setLongitude(mausamLocation.getLongitude());
 		location.setLatitude(mausamLocation.getLatitude());
 		location.setCountry(mausamLocation.getCountry());
+		location.setTimezone(mausamLocation.getTimezone());
 		weatherData.setLocation(location);
 		
 		final Weather weather = new Weather();
@@ -72,6 +73,13 @@ public class MausamResponseMapper {
 		weather.setWeatherStatement(mausamWeather.getWeatherStatement());
 		weather.setWeatherDescription(mausamWeather.getWeatherStatement());
 		
+		weather.setDateTime(mausamWeather.getDateTime());
+		weather.setDateTimeUtc(mausamWeather.getDateTimeUtc());
+		weather.setSunrise(mausamWeather.getSunrise());
+		weather.setSunriseUtc(mausamWeather.getSunriseUtc());
+		weather.setSunset(mausamWeather.getSunset());
+		weather.setSunsetUtc(mausamWeather.getSunsetUtc());
+
 		weatherData.setWeather(weather);
 		mausamResponse.setWeatherData(weatherData);
 		

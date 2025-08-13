@@ -1,5 +1,6 @@
 package com.project.mausam.api.dto;
 
+import java.time.ZoneId;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class Location {
     private String country;
     private Double longitude;
     private Double latitude;
-    private String timezone;
+    private ZoneId timezone;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 

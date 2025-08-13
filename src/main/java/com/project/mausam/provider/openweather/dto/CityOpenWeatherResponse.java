@@ -39,7 +39,7 @@ public class CityOpenWeatherResponse {
 	private Clouds clouds;
 	private Long dt;
 	private Sys sys;
-	private Long timezone;
+	private Integer timezone;
 	private Long id;
 	private String name;
 	private Long cod;
