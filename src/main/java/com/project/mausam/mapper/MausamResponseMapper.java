@@ -1,29 +1,24 @@
 package com.project.mausam.mapper;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
-import com.project.mausam.api.dto.CityMausamResponse;
-import com.project.mausam.api.dto.Humidity;
-import com.project.mausam.api.dto.Location;
-import com.project.mausam.api.dto.Temperature;
-import com.project.mausam.api.dto.Trace;
-import com.project.mausam.api.dto.Visibility;
-import com.project.mausam.api.dto.Weather;
-import com.project.mausam.api.dto.WeatherData;
-import com.project.mausam.api.dto.Wind;
+import com.project.mausam.api.dto.getcitymausam.CityMausamResponse;
+import com.project.mausam.api.dto.getcitymausam.Humidity;
+import com.project.mausam.api.dto.getcitymausam.Location;
+import com.project.mausam.api.dto.getcitymausam.Temperature;
+import com.project.mausam.api.dto.getcitymausam.Trace;
+import com.project.mausam.api.dto.getcitymausam.Visibility;
+import com.project.mausam.api.dto.getcitymausam.Weather;
+import com.project.mausam.api.dto.getcitymausam.WeatherData;
+import com.project.mausam.api.dto.getcitymausam.Wind;
+import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
 import com.project.mausam.entity.Mausam;
 import com.project.mausam.utility.MausamConstants;
-import com.project.mausam.utility.RedisCacheUtil;
 
 @Component
 public class MausamResponseMapper {
 	
-	RedisCacheUtil redisCacheUtil;
-	
-	public MausamResponseMapper(RedisCacheUtil redisCacheUtil) {
-		this.redisCacheUtil = redisCacheUtil;
+	public MausamResponseMapper() {
 		System.out.println("MausamResponseMapper init.");
 	}
 
@@ -71,7 +66,7 @@ public class MausamResponseMapper {
 		weather.setHumidity(humidity);
 		
 		weather.setWeatherStatement(mausamWeather.getWeatherStatement());
-		weather.setWeatherDescription(mausamWeather.getWeatherStatement());
+		weather.setWeatherDescription(mausamWeather.getWeatherDescription());
 		
 		weather.setDateTime(mausamWeather.getDateTime());
 		weather.setDateTimeUtc(mausamWeather.getDateTimeUtc());
@@ -83,17 +78,21 @@ public class MausamResponseMapper {
 		weatherData.setWeather(weather);
 		mausamResponse.setWeatherData(weatherData);
 		
-		final String traceId = UUID.randomUUID().toString();
-		
 		final Trace trace = new Trace();
-		trace.setId(traceId);
+		trace.setId(cityMausam.getTraceId());
 		trace.setExpiryInMinutes(MausamConstants.MAUSAM_CACHE_EXPIRY_TIME_IN_MINUTES);
 		mausamResponse.setTrace(trace);
 		
-		redisCacheUtil.addToCacheWithTtlInMinutes(MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, traceId,
-				cityMausam, trace.getExpiryInMinutes());
-		
 		return mausamResponse;
+	}
+
+	public SaveCityMausamResponse getSaveCityMausamResponse(final Mausam savedMausam) {
+		final CityMausamResponse cityMausamResponse = getCityMausamResponse(savedMausam);
+		final SaveCityMausamResponse saveCityMausamResponse = new SaveCityMausamResponse();
+		saveCityMausamResponse.setId(savedMausam.getId());
+		saveCityMausamResponse.setCityMausam(cityMausamResponse);
+		saveCityMausamResponse.setSavingRemarks(savedMausam.getSavingRemarks());
+		return saveCityMausamResponse;
 	}
 	
 }

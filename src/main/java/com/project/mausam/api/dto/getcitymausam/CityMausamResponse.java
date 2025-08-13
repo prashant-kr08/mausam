@@ -1,6 +1,5 @@
-package com.project.mausam.api.dto;
+package com.project.mausam.api.dto.getcitymausam;
 
-import java.time.ZoneId;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,22 +11,19 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "cityName",
-    "country",
-    "longitude",
-    "latitude",
-    "timezone"
+    "success",
+    "weatherData",
+    "trace"
 })
-@Data
-public class Location {
 
-    private String cityName;
-    private String country;
-    private Double longitude;
-    private Double latitude;
-    private ZoneId timezone;
+@Data
+public class CityMausamResponse {
+
+    private WeatherData weatherData;
+    private Trace trace;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 

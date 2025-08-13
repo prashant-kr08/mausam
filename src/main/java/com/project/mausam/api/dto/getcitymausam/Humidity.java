@@ -1,4 +1,4 @@
-package com.project.mausam.api.dto;
+package com.project.mausam.api.dto.getcitymausam;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,19 +11,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "success",
-    "weatherData",
-    "trace"
+    "value",
+    "unit"
 })
-
 @Data
-public class CityMausamResponse {
+public class Humidity {
 
-    private WeatherData weatherData;
-    private Trace trace;
+    private Long value;
+    private String unit;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 

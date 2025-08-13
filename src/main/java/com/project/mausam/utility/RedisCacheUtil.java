@@ -16,8 +16,15 @@ public class RedisCacheUtil {
 	}
 	
 	public void addToCacheWithTtlInMinutes(final String namespace, final String key, final Object value, final int ttl) {
-		getCacheKeyWithNamespace(namespace, key);
 		redisTemplate.opsForValue().set(getCacheKeyWithNamespace(namespace, key), value, ttl, TimeUnit.MINUTES);
+	}
+	
+	public Object getCacheData(final String namespace, final String Key) {
+		return redisTemplate.opsForValue().get(getCacheKeyWithNamespace(namespace, Key));
+	}
+	
+	public void deleteCacheData(final String namespace, final String key) {
+		redisTemplate.delete(getCacheKeyWithNamespace(namespace, key));
 	}
 
 	private String getCacheKeyWithNamespace(final String namespace, final String key) {

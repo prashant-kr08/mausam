@@ -1,4 +1,4 @@
-package com.project.mausam.api.dto;
+package com.project.mausam.api.dto.getcitymausam;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,14 +13,14 @@ import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "speed",
-    "unit"
+    "id",
+    "expiryInMinutes"
 })
 @Data
-public class Wind {
+public class Trace {
 
-    private Double speed;
-    private String windSpeedUnit;
+    private String id;
+    private int expiryInMinutes;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 

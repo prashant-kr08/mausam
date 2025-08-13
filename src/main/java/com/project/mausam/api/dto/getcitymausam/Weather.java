@@ -1,4 +1,4 @@
-package com.project.mausam.api.dto;
+package com.project.mausam.api.dto.getcitymausam;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;

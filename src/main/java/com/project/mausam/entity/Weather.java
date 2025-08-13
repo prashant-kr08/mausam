@@ -1,7 +1,6 @@
 package com.project.mausam.entity;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
@@ -23,7 +22,7 @@ public class Weather {
     @Embedded
     private Humidity humidity;
     
-    private ZoneId systemTimeZone;
+    private String systemTimeZone;
     private LocalDateTime sunrise;
     private LocalDateTime sunriseUtc;
     private LocalDateTime sunset;

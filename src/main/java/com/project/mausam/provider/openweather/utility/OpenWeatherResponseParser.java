@@ -3,6 +3,7 @@ package com.project.mausam.provider.openweather.utility;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -77,6 +78,7 @@ public class OpenWeatherResponseParser {
 		humidity.setUnit(OpenWeatherConstants.OPENWEATHER_HUMIDITY_UNIT);
 		weather.setHumidity(humidity);
 		
+		weather.setSystemTimeZone(mausamProperties.getTimezone());
 		final ZoneId systemTimeZone = ZoneId.of(mausamProperties.getTimezone());
 		
 		final Long openWeatherDt = openWeatherResponse.getDt();
@@ -95,6 +97,9 @@ public class OpenWeatherResponseParser {
 			weather.setWeatherStatement(details.getMain());
 			weather.setWeatherDescription(details.getDescription());
 		}
+		
+		final String traceId = UUID.randomUUID().toString();
+		mausam.setTraceId(traceId);
 		mausam.setWeather(weather);
 
 		return mausam;
