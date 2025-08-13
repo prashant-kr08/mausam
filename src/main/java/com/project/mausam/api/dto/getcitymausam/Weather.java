@@ -1,5 +1,6 @@
-package com.project.mausam.api.dto;
+package com.project.mausam.api.dto.getcitymausam;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,19 +12,36 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "success",
-    "weatherData",
-    "trace"
+    "dateTime",
+    "dateTimeUtc",
+    "temperature",
+    "visibility",
+    "wind",
+    "humidity",
+    "sunrise",
+    "sunriseUtc",
+    "sunset",
+    "sunsetUtc",
+    "weatherStatement",
+    "weatherDescription"
 })
-
 @Data
-public class CityMausamResponse {
+public class Weather {
 
-    private WeatherData weatherData;
-    private Trace trace;
+    private LocalDateTime dateTime;
+    private LocalDateTime dateTimeUtc;
+    private Temperature temperature;
+    private Visibility visibility;
+    private Wind wind;
+    private Humidity humidity;
+    private LocalDateTime sunrise;
+    private LocalDateTime sunriseUtc;
+    private LocalDateTime sunset;
+    private LocalDateTime sunsetUtc;
+    private String weatherStatement;
+    private String weatherDescription;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 

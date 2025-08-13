@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class Weather {
     private LocalDateTime dateTime;
+    private LocalDateTime dateTimeUtc;
     @Embedded
     private Temperature temperature;
     @Embedded
@@ -21,8 +22,11 @@ public class Weather {
     @Embedded
     private Humidity humidity;
     
+    private String systemTimeZone;
     private LocalDateTime sunrise;
+    private LocalDateTime sunriseUtc;
     private LocalDateTime sunset;
+    private LocalDateTime sunsetUtc;
     private String weatherStatement;
     private String weatherDescription;
 }

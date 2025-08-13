@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.project.mausam.api.dto.MausamApiResponse;
+import com.project.mausam.api.dto.getcitymausam.MausamApiResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,6 +48,17 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> methodArgumentNotValidExceptionHandler(final MethodArgumentNotValidException methodArgumentNotValidException) {
 		logger.error("Some Error Occured in system.", methodArgumentNotValidException);
 		return getErrorResponse(HttpStatus.BAD_REQUEST, "Validation Error.", "Please check the request and try again.");
+	}
+	
+	@ExceptionHandler(CacheDataNotFoundException.class)
+	public ResponseEntity<?> cacheDataNotFoundExceptionHandler(final CacheDataNotFoundException cacheDataNotFoundException) {
+		logger.error("Some Error Occured in system.", cacheDataNotFoundException);
+		return getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, cacheDataNotFoundException.getMessage(), "TraceId either not valid or expired.");
+	}
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<?> constraintVoilationExceptionHandler(final DataIntegrityViolationException dataIntegrityViolationException) {
+		logger.error("Some Error Occured in system.", dataIntegrityViolationException);
+		return getErrorResponse(HttpStatus.BAD_REQUEST, "Data already exist." , "Data already saved into the system, kindly save the new data or fetch this one using it's id.");
 	}
 
 	private ResponseEntity<?> getErrorResponse(final HttpStatus status, final String message, final String details) {

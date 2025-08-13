@@ -1,4 +1,4 @@
-package com.project.mausam.api.dto;
+package com.project.mausam.api.dto.getcitymausam;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ import lombok.Data;
     "unit"
 })
 @Data
-public class Visibility {
+public class Humidity {
 
     private Long value;
     private String unit;

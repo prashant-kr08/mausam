@@ -1,5 +1,7 @@
 package com.project.mausam.entity;
 
+import java.time.ZoneId;
+
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,5 +14,5 @@ public class Location {
 	private String country;
 	private Double longitude;
 	private Double latitude;
-	private String timezone;
+	private ZoneId timezone;
 }

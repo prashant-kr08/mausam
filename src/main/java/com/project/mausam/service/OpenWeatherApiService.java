@@ -8,7 +8,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.project.mausam.api.dto.CityMausamRequest;
+import com.project.mausam.api.dto.getcitymausam.CityMausamRequest;
 import com.project.mausam.configuration.OpenWeatherProperties;
 import com.project.mausam.entity.Mausam;
 import com.project.mausam.provider.openweather.dto.CityOpenWeatherResponse;

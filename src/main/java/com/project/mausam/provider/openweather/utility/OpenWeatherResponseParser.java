@@ -1,10 +1,14 @@
 package com.project.mausam.provider.openweather.utility;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.project.mausam.configuration.MausamProperties;
 import com.project.mausam.entity.Humidity;
 import com.project.mausam.entity.Location;
 import com.project.mausam.entity.Mausam;
@@ -18,12 +22,18 @@ import com.project.mausam.provider.openweather.dto.Main;
 import com.project.mausam.provider.openweather.dto.OpenWeatherUnits;
 import com.project.mausam.provider.openweather.dto.OpenWeatherWindSpeedEnum;
 import com.project.mausam.provider.openweather.dto.Sys;
+import com.project.mausam.utility.MausamCommonHelper;
 
 @Component
 @Lazy
 public class OpenWeatherResponseParser {
 	
-	public OpenWeatherResponseParser() {
+	MausamProperties mausamProperties;
+	MausamCommonHelper mausamCommonHelper;
+	
+	public OpenWeatherResponseParser(MausamProperties mausamProperties, MausamCommonHelper mausamCommonHelper) {
+		this.mausamProperties = mausamProperties;
+		this.mausamCommonHelper = mausamCommonHelper;
 		System.out.println("OpenWeatherResponseParser init.");
 	}
 
@@ -38,6 +48,7 @@ public class OpenWeatherResponseParser {
 		location.setLongitude(coord.getLon());
 		location.setLatitude(coord.getLat());
 		location.setCountry(sys.getCountry());
+		location.setTimezone(mausamCommonHelper.getZoneIdFromUnixTimeZoneUtc(openWeatherResponse.getTimezone()));
 		mausam.setLocation(location);
 
 		final Weather weather = new Weather();
@@ -66,6 +77,19 @@ public class OpenWeatherResponseParser {
 		humidity.setValue(main.getHumidity());
 		humidity.setUnit(OpenWeatherConstants.OPENWEATHER_HUMIDITY_UNIT);
 		weather.setHumidity(humidity);
+		
+		weather.setSystemTimeZone(mausamProperties.getTimezone());
+		final ZoneId systemTimeZone = ZoneId.of(mausamProperties.getTimezone());
+		
+		final Long openWeatherDt = openWeatherResponse.getDt();
+		final Long sunrise = sys.getSunrise();
+		final Long sunset = sys.getSunset();
+		weather.setDateTime(mausamCommonHelper.getDateTimeFromUnixUtc(openWeatherDt, systemTimeZone));
+		weather.setDateTimeUtc(mausamCommonHelper.getDateTimeFromUnixUtc(openWeatherDt, ZoneOffset.UTC));
+		weather.setSunrise(mausamCommonHelper.getDateTimeFromUnixUtc(sunrise, systemTimeZone));
+		weather.setSunriseUtc(mausamCommonHelper.getDateTimeFromUnixUtc(sunrise, ZoneOffset.UTC));
+		weather.setSunset(mausamCommonHelper.getDateTimeFromUnixUtc(sunset, systemTimeZone));
+		weather.setSunsetUtc(mausamCommonHelper.getDateTimeFromUnixUtc(sunset, ZoneOffset.UTC));
 
 		List<com.project.mausam.provider.openweather.dto.Weather> openWeatherWeather = openWeatherResponse.getWeather();
 		if(!(null == openWeatherResponse) && openWeatherWeather.size() > 0) {
@@ -73,6 +97,9 @@ public class OpenWeatherResponseParser {
 			weather.setWeatherStatement(details.getMain());
 			weather.setWeatherDescription(details.getDescription());
 		}
+		
+		final String traceId = UUID.randomUUID().toString();
+		mausam.setTraceId(traceId);
 		mausam.setWeather(weather);
 
 		return mausam;
