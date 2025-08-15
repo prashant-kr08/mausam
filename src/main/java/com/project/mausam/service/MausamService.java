@@ -1,5 +1,9 @@
 package com.project.mausam.service;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,7 @@ import com.project.mausam.repository.MausamRepository;
 import com.project.mausam.utility.MausamConstants;
 import com.project.mausam.utility.RedisCacheUtil;
 import com.project.mausam.utility.errorhandling.CacheDataNotFoundException;
+import com.project.mausam.utility.errorhandling.InvalidIdFormatException;
 
 @Service
 public class MausamService {
@@ -51,10 +56,29 @@ public class MausamService {
 		} else {
 			cachedMausamData.setSavingRemarks(saveCityMausamRequest.getSavingRemarks());
 		}
-		Mausam savedMausam = mausamRepository.save(cachedMausamData);
+		final Mausam savedMausam = mausamRepository.save(cachedMausamData);
 		final SaveCityMausamResponse saveCityMausamResponse = mausamResponseMapper.getSaveCityMausamResponse(savedMausam);
 		
 		return saveCityMausamResponse;
+	}
+
+	@Cacheable(value = MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, key = "'saved_' + #id")
+	public List<SaveCityMausamResponse> getSavedCityWeatherById(final String id) {
+		
+		List<SaveCityMausamResponse> savedCityMausamResponse = new LinkedList<>();
+		if("all".equalsIgnoreCase(id)) {
+			final List<Mausam> lastTenRecords = mausamRepository.findTop10ByOrderByWeather_DateTimeDesc();
+//			List<Mausam> lastTenRecords = mausamRepository
+//			        .findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "dateTime")))
+//			        .getContent();			
+			return lastTenRecords.stream().map(mausam -> (mausamResponseMapper.getSaveCityMausamResponse(mausam))).collect(Collectors.toList());
+		} else if (!id.matches("\\d+")) {
+            throw new InvalidIdFormatException("ID must be a number or 'all'");
+        }
+		
+		final Mausam savedMausam = mausamRepository.getReferenceById(Long.parseLong(id));
+		savedCityMausamResponse.add(mausamResponseMapper.getSaveCityMausamResponse(savedMausam));
+		return savedCityMausamResponse;
 	}
 
 	

@@ -78,10 +78,12 @@ public class MausamResponseMapper {
 		weatherData.setWeather(weather);
 		mausamResponse.setWeatherData(weatherData);
 		
-		final Trace trace = new Trace();
-		trace.setId(cityMausam.getTraceId());
-		trace.setExpiryInMinutes(MausamConstants.MAUSAM_CACHE_EXPIRY_TIME_IN_MINUTES);
-		mausamResponse.setTrace(trace);
+		if(null != cityMausam.getTraceId()) {
+			final Trace trace = new Trace();
+			trace.setId(cityMausam.getTraceId());
+			trace.setExpiryInMinutes(MausamConstants.MAUSAM_CACHE_EXPIRY_TIME_IN_MINUTES);
+			mausamResponse.setTrace(trace);
+		}
 		
 		return mausamResponse;
 	}
@@ -90,7 +92,7 @@ public class MausamResponseMapper {
 		final CityMausamResponse cityMausamResponse = getCityMausamResponse(savedMausam);
 		final SaveCityMausamResponse saveCityMausamResponse = new SaveCityMausamResponse();
 		saveCityMausamResponse.setId(savedMausam.getId());
-		saveCityMausamResponse.setCityMausam(cityMausamResponse);
+		saveCityMausamResponse.setWeatherData(cityMausamResponse.getWeatherData());
 		saveCityMausamResponse.setSavingRemarks(savedMausam.getSavingRemarks());
 		return saveCityMausamResponse;
 	}
