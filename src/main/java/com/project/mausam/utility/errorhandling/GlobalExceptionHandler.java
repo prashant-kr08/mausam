@@ -8,11 +8,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.project.mausam.api.dto.getcitymausam.MausamApiResponse;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,19 +50,43 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> methodArgumentNotValidExceptionHandler(final MethodArgumentNotValidException methodArgumentNotValidException) {
-		logger.error("Some Error Occured in system.", methodArgumentNotValidException);
+		logger.error("Error due to Request data is not valid.", methodArgumentNotValidException);
+		return getErrorResponse(HttpStatus.BAD_REQUEST, "Validation Error.", "Please check the request and try again.");
+	}
+	
+	@ExceptionHandler(HandlerMethodValidationException.class)
+	public ResponseEntity<?> handlerMethodValidationExceptionHandler(final HandlerMethodValidationException handlerMethodValidationException) {
+		logger.error("Error due to Request data is not valid.", handlerMethodValidationException);
 		return getErrorResponse(HttpStatus.BAD_REQUEST, "Validation Error.", "Please check the request and try again.");
 	}
 	
 	@ExceptionHandler(CacheDataNotFoundException.class)
 	public ResponseEntity<?> cacheDataNotFoundExceptionHandler(final CacheDataNotFoundException cacheDataNotFoundException) {
-		logger.error("Some Error Occured in system.", cacheDataNotFoundException);
+		logger.error("Error cache data not found.", cacheDataNotFoundException);
 		return getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, cacheDataNotFoundException.getMessage(), "TraceId either not valid or expired.");
 	}
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<?> constraintVoilationExceptionHandler(final DataIntegrityViolationException dataIntegrityViolationException) {
-		logger.error("Some Error Occured in system.", dataIntegrityViolationException);
+		logger.error("Error due to DB Contraint voilation.", dataIntegrityViolationException);
 		return getErrorResponse(HttpStatus.BAD_REQUEST, "Data already exist." , "Data already saved into the system, kindly save the new data or fetch this one using it's id.");
+	}
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<?> entityNotFoundExceptionHandler(final EntityNotFoundException entityNotFoundException) {
+		logger.error("Error due to DB data not found", entityNotFoundException);
+		return getErrorResponse(HttpStatus.BAD_REQUEST, "Data not found in system for the input.", "Please check the request and try again.");
+	}
+	
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<?> entityNotFoundExceptionHandler(final MissingServletRequestParameterException missingServletRequestParameterException) {
+		logger.error("Error due to missing mandatory parameter in request.", missingServletRequestParameterException);
+		return getErrorResponse(HttpStatus.BAD_REQUEST, "Mandatory parameter missing from request.", "One or more mandatory request parameter is missing.Please check and try angain.");
+	}
+	
+	@ExceptionHandler(InvalidIdFormatException.class)
+	public ResponseEntity<?> invalidIdFormatExceptionHandler(final InvalidIdFormatException invalidIdFormatException) {
+		logger.error("Error due to missing mandatory parameter in request.", invalidIdFormatException);
+		return getErrorResponse(HttpStatus.BAD_REQUEST, invalidIdFormatException.getMessage(), ".Please check the id and try angain.");
 	}
 
 	private ResponseEntity<?> getErrorResponse(final HttpStatus status, final String message, final String details) {
