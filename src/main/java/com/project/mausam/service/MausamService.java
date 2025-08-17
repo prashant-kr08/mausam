@@ -17,6 +17,7 @@ import com.project.mausam.api.dto.updatecitymausam.UpdateCityMausamResponse;
 import com.project.mausam.entity.Mausam;
 import com.project.mausam.entity.MausamHistory;
 import com.project.mausam.entity.MausamUpdateLog;
+import com.project.mausam.mapper.EntityMapper;
 import com.project.mausam.mapper.MausamRequestMapper;
 import com.project.mausam.mapper.MausamResponseMapper;
 import com.project.mausam.repository.MausamRepository;
@@ -34,16 +35,18 @@ public class MausamService {
 	MausamRepository mausamRepository;
 	RedisCacheUtil redisCacheUtil;
 	RepositoryService repositoryService;
+	EntityMapper entityMapper;
 	
 	public MausamService(WeatherApiService weatherApiService, MausamResponseMapper mausamResponseMapper,
 			MausamRequestMapper mausamRequestMapper, MausamRepository mausamRepository, RedisCacheUtil redisCacheUtil,
-			RepositoryService repositoryService) {
+			RepositoryService repositoryService, EntityMapper entityMapper) {
 		this.weatherApiService = weatherApiService;
 		this.mausamResponseMapper = mausamResponseMapper;
 		this.mausamRequestMapper = mausamRequestMapper;
 		this.mausamRepository = mausamRepository;
 		this.redisCacheUtil = redisCacheUtil;
 		this.repositoryService = repositoryService;
+		this.entityMapper = entityMapper;
 		System.out.println("MausamService init");
 	}
 	
@@ -104,16 +107,14 @@ public class MausamService {
 		latestMausam.setSavingRemarks(String.join("|", "Updated", savedMausam.getSavingRemarks()));
 		latestMausam.setId(savedMausam.getId());
 
-		final MausamHistory mausamHistory = new MausamHistory();
-		mausamHistory.setMausamHistory(savedMausam);
+		final MausamHistory mausamHistory = entityMapper.getMausamHistoryFromMausam(savedMausam);
 		
 		final MausamUpdateLog mausamUpdatLog = new MausamUpdateLog();
 		mausamUpdatLog.setUpdateTime(currentDateTime);
 		mausamUpdatLog.setOldMausam(savedMausam);
 		
-		repositoryService.updateMausamOperations(latestMausam, mausamHistory, mausamUpdatLog);
-		
 		final SaveCityMausamResponse pastRecord = mausamResponseMapper.getSaveCityMausamResponse(savedMausam);
+		repositoryService.updateMausamOperations(latestMausam, mausamHistory, mausamUpdatLog);
 		final SaveCityMausamResponse presentRecord = mausamResponseMapper.getSaveCityMausamResponse(latestMausam);
 		
 		final UpdateCityMausamResponse updateCityMausamResponse = new UpdateCityMausamResponse();

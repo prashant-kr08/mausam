@@ -1,5 +1,8 @@
 package com.project.mausam.entity;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,4 +24,14 @@ public class MausamHistory {
 	@ManyToOne
 	@JoinColumn(name = "mausam_id")
 	private Mausam mausamHistory;
+	private String dataProvider;
+	private Integer unitsCode;
+	private String providerUnits;
+	@Embedded
+	private Location location;
+	@Embedded
+	private Weather weather;
+	private Boolean updatedLater;
+	private LocalDateTime updatedAt;
+	private String savingRemarks;
 }

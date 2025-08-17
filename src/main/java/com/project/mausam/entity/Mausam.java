@@ -27,13 +27,13 @@ public class Mausam {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	private String dataProvider;
-	private int unitsCode;
+	private Integer unitsCode;
 	private String providerUnits;
 	@Embedded
 	private Location location;
 	@Embedded
 	private Weather weather;
-	private boolean updatedLater;
+	private Boolean updatedLater;
 	private LocalDateTime updatedAt;
 	private String savingRemarks;
 	@Transient
