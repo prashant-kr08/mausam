@@ -124,5 +124,9 @@ public class MausamService {
 		return updateCityMausamResponse;
 	}
 
+	public void deleteSavedCityWeatherById(final Long id) {
+		mausamRepository.deleteById(id);
+	}
+
 	
 }

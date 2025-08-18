@@ -3,6 +3,7 @@ package com.project.mausam.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,12 @@ public class MausamController {
 	public ResponseEntity<?>updateSavedCityWeatherToLatestById(@PathVariable final Long id) {
 		final UpdateCityMausamResponse updateSavedCityWeatherToLatestById = mausamService.updateSavedCityWeatherToLatestById(id);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, updateSavedCityWeatherToLatestById, null));
+	}
+	
+	@DeleteMapping("/city/Delete/{id}") 
+	public ResponseEntity<?>deleteSavedCityWeatherById(@PathVariable final Long id) {
+		mausamService.deleteSavedCityWeatherById(id);
+		return ResponseEntity.ok(new MausamApiResponse<>(true, null, null));
 	}
 	
 
