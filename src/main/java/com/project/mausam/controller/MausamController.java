@@ -58,11 +58,10 @@ public class MausamController {
 		return ResponseEntity.ok(new MausamApiResponse<>(true, updateSavedCityWeatherToLatestById, null));
 	}
 	
-	@DeleteMapping("/city/Delete/{id}") 
+	@DeleteMapping("/city/delete/{id}") 
 	public ResponseEntity<?>deleteSavedCityWeatherById(@PathVariable final Long id) {
 		mausamService.deleteSavedCityWeatherById(id);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, null, null));
 	}
-	
 
 }

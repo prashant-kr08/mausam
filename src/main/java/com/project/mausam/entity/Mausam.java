@@ -38,9 +38,7 @@ public class Mausam {
 	private String savingRemarks;
 	@Transient
 	private String traceId;
-	@OneToMany(mappedBy = "oldMausam", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<MausamUpdateLog> mausamUpdateLogs = new ArrayList<>();
-	@OneToMany(mappedBy = "mausamHistory", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "mausamHistory", cascade = CascadeType.ALL)
 	private List<MausamHistory> mausamHistory = new ArrayList<>();
 
 }

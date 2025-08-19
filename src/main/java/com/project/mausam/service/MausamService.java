@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.project.mausam.api.dto.getcitymausam.CityMausamRequest;
@@ -26,6 +27,9 @@ import com.project.mausam.utility.RedisCacheUtil;
 import com.project.mausam.utility.errorhandling.CacheDataNotFoundException;
 import com.project.mausam.utility.errorhandling.InvalidIdFormatException;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class MausamService {
 	
@@ -36,10 +40,13 @@ public class MausamService {
 	RedisCacheUtil redisCacheUtil;
 	RepositoryService repositoryService;
 	EntityMapper entityMapper;
+	ApplicationContext applicationContext;
+	@PersistenceContext
+	EntityManager entityManager;
 	
 	public MausamService(WeatherApiService weatherApiService, MausamResponseMapper mausamResponseMapper,
 			MausamRequestMapper mausamRequestMapper, MausamRepository mausamRepository, RedisCacheUtil redisCacheUtil,
-			RepositoryService repositoryService, EntityMapper entityMapper) {
+			RepositoryService repositoryService, EntityMapper entityMapper, ApplicationContext applicationContext) {
 		this.weatherApiService = weatherApiService;
 		this.mausamResponseMapper = mausamResponseMapper;
 		this.mausamRequestMapper = mausamRequestMapper;
@@ -47,7 +54,12 @@ public class MausamService {
 		this.redisCacheUtil = redisCacheUtil;
 		this.repositoryService = repositoryService;
 		this.entityMapper = entityMapper;
+		this.applicationContext = applicationContext;
 		System.out.println("MausamService init");
+	}
+	
+	private MausamService self() {
+		return applicationContext.getBean(MausamService.class);
 	}
 	
 	@Cacheable(value = MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, key = "#cityMausamRequest.cityName + '_' + #cityMausamRequest.units")
@@ -98,7 +110,8 @@ public class MausamService {
 	public UpdateCityMausamResponse updateSavedCityWeatherToLatestById(final Long id) {
 		final Mausam savedMausam = mausamRepository.getReferenceById(id);
 		final CityMausamRequest cityMausamRequestByMausam = mausamRequestMapper.getCityMausamRequestByMausam(savedMausam);
-		final CityMausamResponse latestCityWeather = getCityWeather(cityMausamRequestByMausam);
+		entityManager.detach(savedMausam);
+		final CityMausamResponse latestCityWeather = self().getCityWeather(cityMausamRequestByMausam);
 		final Trace trace = latestCityWeather.getTrace();
 		final LocalDateTime currentDateTime = LocalDateTime.now();
 		final Mausam latestMausam = (Mausam) redisCacheUtil.getCacheData(MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, trace.getId());
@@ -111,7 +124,6 @@ public class MausamService {
 		
 		final MausamUpdateLog mausamUpdatLog = new MausamUpdateLog();
 		mausamUpdatLog.setUpdateTime(currentDateTime);
-		mausamUpdatLog.setOldMausam(savedMausam);
 		
 		final SaveCityMausamResponse pastRecord = mausamResponseMapper.getSaveCityMausamResponse(savedMausam);
 		repositoryService.updateMausamOperations(latestMausam, mausamHistory, mausamUpdatLog);
