@@ -3,8 +3,11 @@ package com.project.mausam.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +18,7 @@ import com.project.mausam.api.dto.getcitymausam.CityMausamResponse;
 import com.project.mausam.api.dto.getcitymausam.MausamApiResponse;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamRequest;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
+import com.project.mausam.api.dto.updatecitymausam.UpdateCityMausamResponse;
 import com.project.mausam.service.MausamService;
 
 import jakarta.validation.Valid;
@@ -31,21 +35,33 @@ public class MausamController {
 	}
 	
 	@PostMapping("/city")
-	public ResponseEntity<?>getCityWeather(@Valid @RequestBody CityMausamRequest cityMausamRequest) {
+	public ResponseEntity<?>getCityWeather(@Valid @RequestBody final CityMausamRequest cityMausamRequest) {
 		final CityMausamResponse cityMausamResponse = mausamService.getCityWeather(cityMausamRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, cityMausamResponse, null));
 	}
 	
 	@PostMapping("/city/save")
-	public ResponseEntity<?>saveCityWeather(@Valid @RequestBody SaveCityMausamRequest saveCityMausamRequest) {
+	public ResponseEntity<?>saveCityWeather(@Valid @RequestBody final SaveCityMausamRequest saveCityMausamRequest) {
 		final SaveCityMausamResponse saveCityMausamResponse = mausamService.saveCityWeather(saveCityMausamRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, saveCityMausamResponse, null));
 	}
 	
 	@GetMapping("/city")
-	public ResponseEntity<?>getSavedCityWeatherById(@NotBlank @RequestParam String id) {
+	public ResponseEntity<?>getSavedCityWeatherById(@NotBlank @RequestParam final String id) {
 		final List<SaveCityMausamResponse> savedCityMausamResponse = mausamService.getSavedCityWeatherById(id);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, savedCityMausamResponse, null));
+	}
+	
+	@PutMapping("/city/update/{id}")
+	public ResponseEntity<?>updateSavedCityWeatherToLatestById(@PathVariable final Long id) {
+		final UpdateCityMausamResponse updateSavedCityWeatherToLatestById = mausamService.updateSavedCityWeatherToLatestById(id);
+		return ResponseEntity.ok(new MausamApiResponse<>(true, updateSavedCityWeatherToLatestById, null));
+	}
+	
+	@DeleteMapping("/city/Delete/{id}") 
+	public ResponseEntity<?>deleteSavedCityWeatherById(@PathVariable final Long id) {
+		mausamService.deleteSavedCityWeatherById(id);
+		return ResponseEntity.ok(new MausamApiResponse<>(true, null, null));
 	}
 	
 

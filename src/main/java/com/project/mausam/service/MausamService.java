@@ -1,5 +1,6 @@
 package com.project.mausam.service;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +13,12 @@ import com.project.mausam.api.dto.getcitymausam.CityMausamResponse;
 import com.project.mausam.api.dto.getcitymausam.Trace;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamRequest;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
+import com.project.mausam.api.dto.updatecitymausam.UpdateCityMausamResponse;
 import com.project.mausam.entity.Mausam;
+import com.project.mausam.entity.MausamHistory;
+import com.project.mausam.entity.MausamUpdateLog;
+import com.project.mausam.mapper.EntityMapper;
+import com.project.mausam.mapper.MausamRequestMapper;
 import com.project.mausam.mapper.MausamResponseMapper;
 import com.project.mausam.repository.MausamRepository;
 import com.project.mausam.utility.MausamConstants;
@@ -25,14 +31,22 @@ public class MausamService {
 	
 	WeatherApiService weatherApiService;
 	MausamResponseMapper mausamResponseMapper;
+	MausamRequestMapper mausamRequestMapper;
 	MausamRepository mausamRepository;
 	RedisCacheUtil redisCacheUtil;
+	RepositoryService repositoryService;
+	EntityMapper entityMapper;
 	
-	public MausamService(WeatherApiService weatherApiService, MausamResponseMapper mausamResponseMapper, MausamRepository mausamRepository, RedisCacheUtil redisCacheUtil) {
+	public MausamService(WeatherApiService weatherApiService, MausamResponseMapper mausamResponseMapper,
+			MausamRequestMapper mausamRequestMapper, MausamRepository mausamRepository, RedisCacheUtil redisCacheUtil,
+			RepositoryService repositoryService, EntityMapper entityMapper) {
 		this.weatherApiService = weatherApiService;
 		this.mausamResponseMapper = mausamResponseMapper;
+		this.mausamRequestMapper = mausamRequestMapper;
 		this.mausamRepository = mausamRepository;
 		this.redisCacheUtil = redisCacheUtil;
+		this.repositoryService = repositoryService;
+		this.entityMapper = entityMapper;
 		System.out.println("MausamService init");
 	}
 	
@@ -79,6 +93,39 @@ public class MausamService {
 		final Mausam savedMausam = mausamRepository.getReferenceById(Long.parseLong(id));
 		savedCityMausamResponse.add(mausamResponseMapper.getSaveCityMausamResponse(savedMausam));
 		return savedCityMausamResponse;
+	}
+
+	public UpdateCityMausamResponse updateSavedCityWeatherToLatestById(final Long id) {
+		final Mausam savedMausam = mausamRepository.getReferenceById(id);
+		final CityMausamRequest cityMausamRequestByMausam = mausamRequestMapper.getCityMausamRequestByMausam(savedMausam);
+		final CityMausamResponse latestCityWeather = getCityWeather(cityMausamRequestByMausam);
+		final Trace trace = latestCityWeather.getTrace();
+		final LocalDateTime currentDateTime = LocalDateTime.now();
+		final Mausam latestMausam = (Mausam) redisCacheUtil.getCacheData(MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, trace.getId());
+		latestMausam.setUpdatedLater(true);
+		latestMausam.setUpdatedAt(currentDateTime);
+		latestMausam.setSavingRemarks(String.join("|", "Updated", savedMausam.getSavingRemarks()));
+		latestMausam.setId(savedMausam.getId());
+
+		final MausamHistory mausamHistory = entityMapper.getMausamHistoryFromMausam(savedMausam);
+		
+		final MausamUpdateLog mausamUpdatLog = new MausamUpdateLog();
+		mausamUpdatLog.setUpdateTime(currentDateTime);
+		mausamUpdatLog.setOldMausam(savedMausam);
+		
+		final SaveCityMausamResponse pastRecord = mausamResponseMapper.getSaveCityMausamResponse(savedMausam);
+		repositoryService.updateMausamOperations(latestMausam, mausamHistory, mausamUpdatLog);
+		final SaveCityMausamResponse presentRecord = mausamResponseMapper.getSaveCityMausamResponse(latestMausam);
+		
+		final UpdateCityMausamResponse updateCityMausamResponse = new UpdateCityMausamResponse();
+		updateCityMausamResponse.setPastRecord(pastRecord);
+		updateCityMausamResponse.setPresentRecord(presentRecord);
+		
+		return updateCityMausamResponse;
+	}
+
+	public void deleteSavedCityWeatherById(final Long id) {
+		mausamRepository.deleteById(id);
 	}
 
 	
