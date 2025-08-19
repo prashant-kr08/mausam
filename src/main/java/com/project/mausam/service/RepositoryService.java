@@ -25,10 +25,10 @@ public class RepositoryService {
 	}
 
 	@Transactional
-	public void updateMausamOperations(final Mausam latestMausam, final MausamHistory mausamHistory, MausamUpdateLog mausamUpdatLog) {
+	public void updateMausamOperations(final Mausam latestMausam, final MausamHistory mausamHistory, final MausamUpdateLog mausamUpdatLog) {
 		mausamRepository.save(latestMausam);
 		final MausamHistory savedMausamHistory = mausamHistoryRepository.save(mausamHistory);
-		mausamUpdatLog.setMausamHistory(savedMausamHistory);
+		mausamUpdatLog.setSavedMausamHistory(savedMausamHistory);
 		mausamUpdateLogRepository.save(mausamUpdatLog);
 	}
 
