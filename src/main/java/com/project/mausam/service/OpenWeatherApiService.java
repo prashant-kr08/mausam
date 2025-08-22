@@ -12,20 +12,22 @@ import com.project.mausam.api.dto.getcitymausam.CityMausamRequest;
 import com.project.mausam.configuration.OpenWeatherProperties;
 import com.project.mausam.entity.Mausam;
 import com.project.mausam.provider.openweather.dto.CityOpenWeatherResponse;
-import com.project.mausam.provider.openweather.dto.OpenWeatherUnits;
 import com.project.mausam.provider.openweather.utility.OpenWeatherConstants;
 import com.project.mausam.provider.openweather.utility.OpenWeatherResponseParser;
 import com.project.mausam.utility.MausamConstants;
+import com.project.mausam.utility.WeatherApisUnits;
 import com.project.mausam.utility.errorhandling.InvalidUnitsException;
 
 public class OpenWeatherApiService implements WeatherApiService {
 	
 	final OpenWeatherProperties openWeatherProperties;
 	final OpenWeatherResponseParser openWeatherResponseParser;
+	final RestTemplate restTemplate;
 	
-	public OpenWeatherApiService(final OpenWeatherProperties openWeatherProperties, final OpenWeatherResponseParser openWeatherResponseParser) {
+	public OpenWeatherApiService(final OpenWeatherProperties openWeatherProperties, final OpenWeatherResponseParser openWeatherResponseParser, final RestTemplate restTemplate) {
 		this.openWeatherProperties = openWeatherProperties;
 		this.openWeatherResponseParser = openWeatherResponseParser;
+		this.restTemplate = restTemplate;
 		System.out.println("OpenWeatherApi init");
 	}
 
@@ -35,8 +37,6 @@ public class OpenWeatherApiService implements WeatherApiService {
 		final int units = cityMausamRequest.getUnits();
 		final String cityName = cityMausamRequest.getCityName();
 		
-		RestTemplate restTemplate = new RestTemplate();
-		
 		final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 		queryParams.add(OpenWeatherConstants.OPENWEATHER_PARAM_APPID, openWeatherProperties.getApiKey());
 		queryParams.add(OpenWeatherConstants.OPENWEATHER_PARAM_QUERY, cityName);
@@ -45,11 +45,8 @@ public class OpenWeatherApiService implements WeatherApiService {
 			throw new InvalidUnitsException();
 		}
 
-		String openWeatherUnit = null;
-		if (units != 0) {
-			openWeatherUnit = OpenWeatherUnits.getOpenWeatherUnitFromId(units);
-			queryParams.add(OpenWeatherConstants.OPENWEATHER_PARAM_UNITS, openWeatherUnit);
-		}
+		final String openWeatherUnit = WeatherApisUnits.getOpenWeatherUnitFromId(units);
+		queryParams.add(OpenWeatherConstants.OPENWEATHER_PARAM_UNITS, openWeatherUnit);
 		
 		URI uri = UriComponentsBuilder
 				.fromUriString(openWeatherProperties.getUrl())
@@ -59,7 +56,7 @@ public class OpenWeatherApiService implements WeatherApiService {
 		
 		System.out.println("Calling URI: " + uri.toString());
 		
-        CityOpenWeatherResponse response = restTemplate.getForObject(uri, CityOpenWeatherResponse.class);
+        final CityOpenWeatherResponse response = restTemplate.getForObject(uri, CityOpenWeatherResponse.class);
 		
 		final Mausam mausam = openWeatherResponseParser.parseCityOpenWeatherResponse(response, units);
 		mausam.setDataProvider(MausamConstants.PROVIDER_OPEN_WEATHER);
