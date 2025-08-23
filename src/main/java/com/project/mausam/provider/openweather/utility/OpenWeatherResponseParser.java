@@ -19,10 +19,10 @@ import com.project.mausam.entity.Wind;
 import com.project.mausam.provider.openweather.dto.CityOpenWeatherResponse;
 import com.project.mausam.provider.openweather.dto.Coord;
 import com.project.mausam.provider.openweather.dto.Main;
-import com.project.mausam.provider.openweather.dto.OpenWeatherUnits;
 import com.project.mausam.provider.openweather.dto.OpenWeatherWindSpeedEnum;
 import com.project.mausam.provider.openweather.dto.Sys;
 import com.project.mausam.utility.MausamCommonHelper;
+import com.project.mausam.utility.WeatherApisUnits;
 
 @Component
 @Lazy
@@ -59,7 +59,7 @@ public class OpenWeatherResponseParser {
 		temperature.setFeelsLike(main.getFeelsLike());
 		temperature.setMin(main.getTempMin());
 		temperature.setMax(main.getTempMax());
-		temperature.setUnit(OpenWeatherUnits.getStandardWeatherUnitFromId(units));
+		temperature.setUnit(WeatherApisUnits.getStandardWeatherUnitFromId(units));
 		weather.setTemperature(temperature);
 
 		final Visibility visibility = new Visibility();

@@ -1,0 +1,9 @@
+package com.project.mausam.provider.weatherstack.utility;
+
+public class WeatherStackConstants {
+	
+	public static final String WEATHERSTACK_PARAM_ACCESS_KEY = "access_key"; 
+	public static final String WEATHERSTACK_PARAM_QUERY = "query"; 
+	public static final String WEATHERSTACK_PARAM_UNITS = "units"; 
+
+}
