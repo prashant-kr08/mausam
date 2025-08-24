@@ -30,8 +30,8 @@ public class Location {
     private String name;
     private String country;
     private String region;
-    private String lat;
-    private String lon;
+    private Double lat;
+    private Double lon;
     @JsonProperty("timezone_id")
     private String timezoneId;
     private String localtime;
