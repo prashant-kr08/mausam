@@ -19,10 +19,11 @@ import com.project.mausam.entity.Wind;
 import com.project.mausam.provider.openweather.dto.CityOpenWeatherResponse;
 import com.project.mausam.provider.openweather.dto.Coord;
 import com.project.mausam.provider.openweather.dto.Main;
-import com.project.mausam.provider.openweather.dto.OpenWeatherWindSpeedEnum;
 import com.project.mausam.provider.openweather.dto.Sys;
 import com.project.mausam.utility.MausamCommonHelper;
 import com.project.mausam.utility.WeatherApisUnits;
+import com.project.mausam.utility.WeatherApisVisibilityUnit;
+import com.project.mausam.utility.WeatherApisWindSpeedUnit;
 
 @Component
 @Lazy
@@ -64,13 +65,13 @@ public class OpenWeatherResponseParser {
 
 		final Visibility visibility = new Visibility();
 		visibility.setValue(openWeatherResponse.getVisibility());
-		visibility.setUnit(OpenWeatherConstants.OPENWEATHER_VISIBILITY_UNIT);
+		visibility.setUnit(WeatherApisVisibilityUnit.getOpenWeatherVisibilityUnitByUnitId(units));
 		weather.setVisibility(visibility);
 
 		final Wind wind = new Wind();
 		final com.project.mausam.provider.openweather.dto.Wind openWeatherWind = openWeatherResponse.getWind();
 		wind.setSpeed(openWeatherWind.getSpeed());
-		wind.setWindSpeedUnit(OpenWeatherWindSpeedEnum.getWindSpeedUnitfromUnitsId(units));
+		wind.setWindSpeedUnit(WeatherApisWindSpeedUnit.getOpenWeatherWindSpeedUnitfromUnitsId(units));
 		weather.setWind(wind);
 
 		final Humidity humidity = new Humidity();

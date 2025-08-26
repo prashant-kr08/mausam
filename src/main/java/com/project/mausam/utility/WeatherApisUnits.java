@@ -1,9 +1,9 @@
 package com.project.mausam.utility;
 
 public enum WeatherApisUnits {
-	STANDARD(0, "standard", "s", "Kelvin"), //openWeather default
-	METRIC(1, "metric", "m", "Celsius"), //weatherSatck deafult
-	IMPERIAL(2, "imperial","f", "Fahrenheit");
+	KELVIN(0, "standard", "s", "Kelvin"), //openWeather default
+	CELCIUS(1, "metric", "m", "Celsius"), //weatherSatck deafult
+	FAHRENHEIT(2, "imperial","f", "Fahrenheit");
 
 	private int unitId;
 	private String openWeatherUnit;
@@ -39,7 +39,7 @@ public enum WeatherApisUnits {
 				return weatherApisUnit.getOpenWeatherUnit();
 			}
 		}
-		return STANDARD.getOpenWeatherUnit();
+		return KELVIN.getOpenWeatherUnit();
 	}
 	
 	public static String getWeatherStackUnitFromId(final int id) {
@@ -48,7 +48,7 @@ public enum WeatherApisUnits {
 				return weatherApisUnit.getWeatherStackUnit();
 			}
 		}
-		return STANDARD.getWeatherStackUnit();
+		return KELVIN.getWeatherStackUnit();
 	}
 	
 	public static String getStandardWeatherUnitFromId(final int id) {
@@ -57,7 +57,7 @@ public enum WeatherApisUnits {
 				return weatherApisUnit.getStandardWeatherUnit();
 			}
 		}
-		return STANDARD.getStandardWeatherUnit();
+		return KELVIN.getStandardWeatherUnit();
 	}
 	
 	public static String getStandardWeatherUnitfromOpenWeatherUnit(final String openWeatherUnitName) {
@@ -66,7 +66,7 @@ public enum WeatherApisUnits {
 				return weatherApisUnit.getStandardWeatherUnit();
 			}
 		}
-		return STANDARD.getStandardWeatherUnit();
+		return KELVIN.getStandardWeatherUnit();
 	}
 	
 	public static String getStandardWeatherUnitfromWeatherStackUnit(final String weatherStackUnitName) {
@@ -75,7 +75,7 @@ public enum WeatherApisUnits {
 				return weatherApisUnit.getStandardWeatherUnit();
 			}
 		}
-		return STANDARD.getStandardWeatherUnit();
+		return KELVIN.getStandardWeatherUnit();
 	}
 
 }

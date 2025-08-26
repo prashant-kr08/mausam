@@ -39,7 +39,7 @@ public class Current {
 
     @JsonProperty("observation_time")
     private String observationTime;
-    private Long temperature;
+    private Double temperature;
     @JsonProperty("weather_code")
     private Long weatherCode;
     @JsonProperty("weather_icons")
@@ -50,7 +50,7 @@ public class Current {
     @JsonProperty("air_quality")
     private AirQuality airQuality;
     @JsonProperty("wind_speed")
-    private Long windSpeed;
+    private Double windSpeed;
     @JsonProperty("wind_degree")
     private Long windDegree;
     @JsonProperty("wind_dir")
@@ -59,7 +59,7 @@ public class Current {
     private Long precip;
     private Long humidity;
     private Long cloudcover;
-    private Long feelslike;
+    private Double feelslike;
     @JsonProperty("uv_index")
     private Long uvIndex;
     private Long visibility;
