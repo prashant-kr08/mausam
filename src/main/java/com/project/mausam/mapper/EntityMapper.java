@@ -17,7 +17,7 @@ public class EntityMapper {
 		mausamHistory.setSavingRemarks(savedMausam.getSavingRemarks());
 		mausamHistory.setUnitsCode(savedMausam.getUnitsCode());
 		mausamHistory.setUpdatedAt(savedMausam.getUpdatedAt());
-		mausamHistory.setUpdatedLater(savedMausam.getUpdatedLater());
+		mausamHistory.setUpdatedLater(savedMausam.isUpdatedLater());
 		mausamHistory.setWeather(savedMausam.getWeather());
 		return mausamHistory;
 	}

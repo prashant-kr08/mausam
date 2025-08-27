@@ -33,7 +33,7 @@ public class Mausam {
 	private Location location;
 	@Embedded
 	private Weather weather;
-	private Boolean updatedLater;
+	private boolean updatedLater;
 	private LocalDateTime updatedAt;
 	private String savingRemarks;
 	@Transient
