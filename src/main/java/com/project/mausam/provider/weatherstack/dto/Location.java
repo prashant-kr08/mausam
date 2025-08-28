@@ -38,7 +38,7 @@ public class Location {
     @JsonProperty("localtime_epoch")
     private Long localtimeEpoch;
     @JsonProperty("utc_offset")
-    private String utcOffset;
+    private Double utcOffset;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
