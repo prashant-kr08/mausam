@@ -17,14 +17,14 @@ import com.project.mausam.entity.Temperature;
 import com.project.mausam.entity.Visibility;
 import com.project.mausam.entity.Weather;
 import com.project.mausam.entity.Wind;
+import com.project.mausam.enums.WeatherApisUnits;
+import com.project.mausam.enums.WeatherApisVisibilityUnit;
+import com.project.mausam.enums.WeatherApisWindSpeedUnit;
 import com.project.mausam.provider.weatherstack.dto.Astro;
 import com.project.mausam.provider.weatherstack.dto.CityWeatherStackResponse;
 import com.project.mausam.provider.weatherstack.dto.Current;
 import com.project.mausam.provider.weatherstack.dto.Location;
 import com.project.mausam.utility.DateTimeUtil;
-import com.project.mausam.utility.WeatherApisUnits;
-import com.project.mausam.utility.WeatherApisVisibilityUnit;
-import com.project.mausam.utility.WeatherApisWindSpeedUnit;
 
 @Component
 public class WeatherStackResponseParser {
