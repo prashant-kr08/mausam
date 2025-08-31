@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
+import com.project.mausam.api.dto.auth.LoginRequest;
+import com.project.mausam.api.dto.auth.LoginResponse;
 import com.project.mausam.api.dto.auth.SignUpRequest;
 import com.project.mausam.api.dto.auth.SignUpResponse;
 import com.project.mausam.entity.User;
@@ -31,6 +33,21 @@ public class AuthService {
 		userToRegister.setCreatedAt(LocalDateTime.now());
 		final User savedUser = authRepository.save(userToRegister);
 		return mausamResponseMapper.getSignUpResponseByUser(savedUser);
+	}
+
+	public LoginResponse login(LoginRequest loginRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public SignUpResponse adminRegisterUser(SignUpRequest signUpRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public SignUpResponse adminRegisterAdmin(SignUpRequest signUpRequest) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

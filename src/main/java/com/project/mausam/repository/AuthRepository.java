@@ -7,5 +7,7 @@ import com.project.mausam.entity.User;
 
 @Repository
 public interface AuthRepository extends JpaRepository<User, Long>{
-
+	
+	public User findUserByUsername(String username);
+	
 }

@@ -104,7 +104,7 @@ public class MausamResponseMapper {
 		signUpResponse.setName(String.join(" ", savedUser.getFirstName(), savedUser.getLastName()).trim());
 		signUpResponse.setUserName(savedUser.getUsername());
 		signUpResponse.setRegisterAt(savedUser.getCreatedAt());
-		return SignUpResponse;
+		return signUpResponse;
 	}
 	
 }
