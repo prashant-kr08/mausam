@@ -1,7 +1,5 @@
 package com.project.mausam.configuration;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.project.mausam.filter.JWTFilter;
 import com.project.mausam.repository.AuthRepository;
 import com.project.mausam.service.MausamAuthUserDetailsService;;
 
@@ -23,9 +23,11 @@ import com.project.mausam.service.MausamAuthUserDetailsService;;
 public class AuthConfig {
 	
 	private final AuthRepository authRepository;
+	private final JWTFilter jwtFilter;
 	
-	public AuthConfig(AuthRepository authRepository) {
+	public AuthConfig(AuthRepository authRepository, JWTFilter jwtFilter) {
 		this.authRepository = authRepository;
+		this.jwtFilter = jwtFilter;
 	}
 
 	@Bean
@@ -33,9 +35,10 @@ public class AuthConfig {
 		return http
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/mausam/user/signup").permitAll()
+						.requestMatchers("/api/mausam/user/signup", "/api/mausam/login").permitAll()
 						.anyRequest().authenticated())
-				.httpBasic(withDefaults()).build();
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.build();
 	}
 	
 	@Bean
