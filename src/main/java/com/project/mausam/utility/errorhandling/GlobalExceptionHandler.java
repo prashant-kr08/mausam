@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -87,6 +88,11 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> invalidIdFormatExceptionHandler(final InvalidIdFormatException invalidIdFormatException) {
 		logger.error("Error due to missing mandatory parameter in request.", invalidIdFormatException);
 		return getErrorResponse(HttpStatus.BAD_REQUEST, invalidIdFormatException.getMessage(), ".Please check the id and try angain.");
+	}
+	@ExceptionHandler(AuthorizationDeniedException.class)
+	public ResponseEntity<?> authorizationDeneidExceptionHandler(final AuthorizationDeniedException authorizationDeniedException) {
+		logger.error("Error not have accesss.", authorizationDeniedException);
+		return getErrorResponse(HttpStatus.FORBIDDEN, authorizationDeniedException.getMessage(), "User not allowed to access this service.");
 	}
 
 	private ResponseEntity<?> getErrorResponse(final HttpStatus status, final String message, final String details) {
