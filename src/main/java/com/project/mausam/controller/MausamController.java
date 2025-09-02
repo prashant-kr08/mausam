@@ -3,6 +3,7 @@ package com.project.mausam.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,30 +36,35 @@ public class MausamController {
 	}
 	
 	@PostMapping("/city")
+	@PreAuthorize("hasAuthority('FETCH')")
 	public ResponseEntity<?>getCityWeather(@Valid @RequestBody final CityMausamRequest cityMausamRequest) {
 		final CityMausamResponse cityMausamResponse = mausamService.getCityWeather(cityMausamRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, cityMausamResponse, null));
 	}
 	
 	@PostMapping("/city/save")
+	@PreAuthorize("hasAuthority('DBOPERATIONS')")
 	public ResponseEntity<?>saveCityWeather(@Valid @RequestBody final SaveCityMausamRequest saveCityMausamRequest) {
 		final SaveCityMausamResponse saveCityMausamResponse = mausamService.saveCityWeather(saveCityMausamRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, saveCityMausamResponse, null));
 	}
 	
 	@GetMapping("/city")
+	@PreAuthorize("hasAuthority('DBOPERATIONS')")
 	public ResponseEntity<?>getSavedCityWeatherById(@NotBlank @RequestParam final String id) {
 		final List<SaveCityMausamResponse> savedCityMausamResponse = mausamService.getSavedCityWeatherById(id);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, savedCityMausamResponse, null));
 	}
 	
 	@PutMapping("/city/update/{id}")
+	@PreAuthorize("hasAuthority('DBOPERATIONS')")
 	public ResponseEntity<?>updateSavedCityWeatherToLatestById(@PathVariable final Long id) {
 		final UpdateCityMausamResponse updateSavedCityWeatherToLatestById = mausamService.updateSavedCityWeatherToLatestById(id);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, updateSavedCityWeatherToLatestById, null));
 	}
 	
 	@DeleteMapping("/city/delete/{id}") 
+	@PreAuthorize("hasAuthority('DBOPERATIONS')")
 	public ResponseEntity<?>deleteSavedCityWeatherById(@PathVariable final Long id) {
 		mausamService.deleteSavedCityWeatherById(id);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, null, null));

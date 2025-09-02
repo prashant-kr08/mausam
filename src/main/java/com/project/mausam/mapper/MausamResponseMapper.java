@@ -2,6 +2,7 @@ package com.project.mausam.mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.project.mausam.api.dto.auth.SignUpResponse;
 import com.project.mausam.api.dto.getcitymausam.CityMausamResponse;
 import com.project.mausam.api.dto.getcitymausam.Humidity;
 import com.project.mausam.api.dto.getcitymausam.Location;
@@ -13,6 +14,7 @@ import com.project.mausam.api.dto.getcitymausam.WeatherData;
 import com.project.mausam.api.dto.getcitymausam.Wind;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
 import com.project.mausam.entity.Mausam;
+import com.project.mausam.entity.User;
 import com.project.mausam.utility.MausamConstants;
 
 @Component
@@ -95,6 +97,14 @@ public class MausamResponseMapper {
 		saveCityMausamResponse.setWeatherData(cityMausamResponse.getWeatherData());
 		saveCityMausamResponse.setSavingRemarks(savedMausam.getSavingRemarks());
 		return saveCityMausamResponse;
+	}
+
+	public SignUpResponse getSignUpResponseByUser(final User savedUser) {
+		final SignUpResponse signUpResponse = new SignUpResponse();
+		signUpResponse.setName(String.join(" ", savedUser.getFirstName(), savedUser.getLastName()).trim());
+		signUpResponse.setUserName(savedUser.getUsername());
+		signUpResponse.setRegisterAt(savedUser.getCreatedAt());
+		return signUpResponse;
 	}
 	
 }

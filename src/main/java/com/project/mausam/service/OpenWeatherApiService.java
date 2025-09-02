@@ -11,11 +11,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.project.mausam.api.dto.getcitymausam.CityMausamRequest;
 import com.project.mausam.configuration.OpenWeatherProperties;
 import com.project.mausam.entity.Mausam;
+import com.project.mausam.enums.WeatherApisUnits;
 import com.project.mausam.provider.openweather.dto.CityOpenWeatherResponse;
 import com.project.mausam.provider.openweather.utility.OpenWeatherConstants;
 import com.project.mausam.provider.openweather.utility.OpenWeatherResponseParser;
 import com.project.mausam.utility.MausamConstants;
-import com.project.mausam.utility.WeatherApisUnits;
 import com.project.mausam.utility.errorhandling.InvalidUnitsException;
 
 public class OpenWeatherApiService implements WeatherApiService {

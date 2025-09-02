@@ -16,14 +16,14 @@ import com.project.mausam.entity.Temperature;
 import com.project.mausam.entity.Visibility;
 import com.project.mausam.entity.Weather;
 import com.project.mausam.entity.Wind;
+import com.project.mausam.enums.WeatherApisUnits;
+import com.project.mausam.enums.WeatherApisVisibilityUnit;
+import com.project.mausam.enums.WeatherApisWindSpeedUnit;
 import com.project.mausam.provider.openweather.dto.CityOpenWeatherResponse;
 import com.project.mausam.provider.openweather.dto.Coord;
 import com.project.mausam.provider.openweather.dto.Main;
 import com.project.mausam.provider.openweather.dto.Sys;
 import com.project.mausam.utility.DateTimeUtil;
-import com.project.mausam.utility.WeatherApisUnits;
-import com.project.mausam.utility.WeatherApisVisibilityUnit;
-import com.project.mausam.utility.WeatherApisWindSpeedUnit;
 
 @Component
 @Lazy

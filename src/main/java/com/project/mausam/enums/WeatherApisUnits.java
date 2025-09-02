@@ -1,4 +1,4 @@
-package com.project.mausam.utility;
+package com.project.mausam.enums;
 
 public enum WeatherApisUnits {
 	KELVIN(0, "standard", "s", "Kelvin"), //openWeather default

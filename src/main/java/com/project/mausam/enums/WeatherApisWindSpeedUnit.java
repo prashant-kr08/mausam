@@ -1,4 +1,4 @@
-package com.project.mausam.utility;
+package com.project.mausam.enums;
 
 public enum WeatherApisWindSpeedUnit {
 	KELVIN(0, "meter/sec", "kilometer/hour"),

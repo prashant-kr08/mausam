@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import com.project.mausam.configuration.MausamProperties;
 import com.project.mausam.entity.Humidity;
 import com.project.mausam.entity.Mausam;
@@ -15,20 +17,20 @@ import com.project.mausam.entity.Temperature;
 import com.project.mausam.entity.Visibility;
 import com.project.mausam.entity.Weather;
 import com.project.mausam.entity.Wind;
+import com.project.mausam.enums.WeatherApisUnits;
+import com.project.mausam.enums.WeatherApisVisibilityUnit;
+import com.project.mausam.enums.WeatherApisWindSpeedUnit;
 import com.project.mausam.provider.weatherstack.dto.Astro;
 import com.project.mausam.provider.weatherstack.dto.CityWeatherStackResponse;
 import com.project.mausam.provider.weatherstack.dto.Current;
 import com.project.mausam.provider.weatherstack.dto.Location;
 import com.project.mausam.utility.DateTimeUtil;
-import com.project.mausam.utility.WeatherApisUnits;
-import com.project.mausam.utility.WeatherApisVisibilityUnit;
-import com.project.mausam.utility.WeatherApisWindSpeedUnit;
 
+@Component
 public class WeatherStackResponseParser {
 	
 	private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-	private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER_12H = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a");
-
+	private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER_12H = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
 	
 	private final MausamProperties mausamProperties;
 	private final DateTimeUtil dateTimeUtil;
