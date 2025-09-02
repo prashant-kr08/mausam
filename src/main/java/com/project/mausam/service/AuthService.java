@@ -27,27 +27,11 @@ public class AuthService {
 		this.mausamResponseMapper = mausamResponseMapper;
 	}
 
-	public SignUpResponse registerUser(final SignUpRequest signUpRequest) {
+	public SignUpResponse processRegistration(final SignUpRequest signUpRequest, final UserRole role) {
 		final User userToRegister = mausamRequestMapper.getUserBySignUpRequest(signUpRequest);
-		userToRegister.setRole(UserRole.USER);
+		userToRegister.setRole(role);
 		userToRegister.setCreatedAt(LocalDateTime.now());
 		final User savedUser = authRepository.save(userToRegister);
 		return mausamResponseMapper.getSignUpResponseByUser(savedUser);
 	}
-
-	public LoginResponse login(LoginRequest loginRequest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SignUpResponse adminRegisterUser(SignUpRequest signUpRequest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public SignUpResponse adminRegisterAdmin(SignUpRequest signUpRequest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -14,6 +14,7 @@ import com.project.mausam.api.dto.auth.LoginResponse;
 import com.project.mausam.api.dto.auth.SignUpRequest;
 import com.project.mausam.api.dto.auth.SignUpResponse;
 import com.project.mausam.api.dto.getcitymausam.MausamApiResponse;
+import com.project.mausam.enums.UserRole;
 import com.project.mausam.service.AuthService;
 import com.project.mausam.utility.JWTUtil;
 
@@ -33,21 +34,21 @@ public class AuthController {
 
 	@PostMapping("/user/signup")
 	public ResponseEntity<?> registerUser(@RequestBody final SignUpRequest signUpRequest){
-		final SignUpResponse signUpResponse = authService.registerUser(signUpRequest);
+		final SignUpResponse signUpResponse = authService.processRegistration(signUpRequest, UserRole.USER);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, signUpResponse, null));
 	}
 	
 	@PostMapping("/admin/register/user")
 	@PreAuthorize("hasAuthority('REGISTER')")
 	public ResponseEntity<?> adminRegisterUser(@RequestBody final SignUpRequest signUpRequest){
-		final SignUpResponse signUpResponse = authService.adminRegisterUser(signUpRequest);
+		final SignUpResponse signUpResponse = authService.processRegistration(signUpRequest, UserRole.USER);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, signUpResponse, null));
 	}
 	
 	@PostMapping("/admin/register/admin")
 	@PreAuthorize("hasAuthority('REGISTER')")
 	public ResponseEntity<?> adminRegisterAdmin(@RequestBody final SignUpRequest signUpRequest){
-		final SignUpResponse signUpResponse = authService.adminRegisterUser(signUpRequest);
+		final SignUpResponse signUpResponse = authService.processRegistration(signUpRequest, UserRole.ADMIN);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, signUpResponse, null));
 	}
 	
