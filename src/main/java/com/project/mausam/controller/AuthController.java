@@ -1,6 +1,7 @@
 package com.project.mausam.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,12 +38,14 @@ public class AuthController {
 	}
 	
 	@PostMapping("/admin/register/user")
+	@PreAuthorize("hasAuthority('REGISTER')")
 	public ResponseEntity<?> adminRegisterUser(@RequestBody final SignUpRequest signUpRequest){
 		final SignUpResponse signUpResponse = authService.adminRegisterUser(signUpRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, signUpResponse, null));
 	}
 	
 	@PostMapping("/admin/register/admin")
+	@PreAuthorize("hasAuthority('REGISTER')")
 	public ResponseEntity<?> adminRegisterAdmin(@RequestBody final SignUpRequest signUpRequest){
 		final SignUpResponse signUpResponse = authService.adminRegisterUser(signUpRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, signUpResponse, null));

@@ -2,7 +2,10 @@ package com.project.mausam.entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,6 +48,11 @@ public class User implements UserDetails {
 	private LocalDateTime createdAt;
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority(role.getRoleName()));
+		final Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+role.name()));
+		grantedAuthorities.addAll(role.getUserPermissions().stream()
+				.map(authority -> new SimpleGrantedAuthority(authority.name()))
+				.collect(Collectors.toSet()));		
+		return grantedAuthorities;
 	}
 }
