@@ -83,9 +83,8 @@ public class MausamService {
 			cachedMausamData.setSavingRemarks(saveCityMausamRequest.getSavingRemarks());
 		}
 		final Mausam savedMausam = mausamRepository.save(cachedMausamData);
-		final SaveCityMausamResponse saveCityMausamResponse = mausamResponseMapper.getSaveCityMausamResponse(savedMausam);
+		return mausamResponseMapper.getSaveCityMausamResponse(savedMausam);
 		
-		return saveCityMausamResponse;
 	}
 
 	@Cacheable(value = MausamConstants.MAUSAM_JSON_CACHE_WITH_EXPIRY_NAMESPACE, key = "'saved_' + #id")
@@ -97,7 +96,7 @@ public class MausamService {
 //			List<Mausam> lastTenRecords = mausamRepository
 //			        .findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "dateTime")))
 //			        .getContent();			
-			return lastTenRecords.stream().map(mausam -> (mausamResponseMapper.getSaveCityMausamResponse(mausam))).collect(Collectors.toList());
+			return lastTenRecords.stream().map(mausam -> (mausamResponseMapper.getSaveCityMausamResponse(mausam))).toList();
 		} else if (!id.matches("\\d+")) {
             throw new InvalidIdFormatException("ID must be a number or 'all'");
         }

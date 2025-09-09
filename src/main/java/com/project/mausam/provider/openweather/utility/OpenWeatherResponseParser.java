@@ -93,7 +93,7 @@ public class OpenWeatherResponseParser {
 		weather.setSunsetUtc(dateTimeUtil.getDateTimeFromUnixUtc(sunset, ZoneOffset.UTC));
 
 		List<com.project.mausam.provider.openweather.dto.Weather> openWeatherWeather = openWeatherResponse.getWeather();
-		if(!(null == openWeatherResponse) && openWeatherWeather.size() > 0) {
+		if(openWeatherResponse!=null && !openWeatherWeather.isEmpty()) {
 			com.project.mausam.provider.openweather.dto.Weather details = openWeatherWeather.get(0);
 			weather.setWeatherStatement(details.getMain());
 			weather.setWeatherDescription(details.getDescription());

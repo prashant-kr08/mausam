@@ -17,8 +17,7 @@ public class ObjectMapperConfig {
 	@Bean
 	@Primary
 	public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-		ObjectMapper mapper = builder.build();
-		return mapper;
+		return  builder.build();
 	}
 
 	@Bean("redisObjectMapper")
