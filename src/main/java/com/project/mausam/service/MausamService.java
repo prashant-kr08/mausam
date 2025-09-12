@@ -3,15 +3,20 @@ package com.project.mausam.service;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.project.mausam.api.dto.getcitymausam.CityMausamRequest;
 import com.project.mausam.api.dto.getcitymausam.CityMausamResponse;
 import com.project.mausam.api.dto.getcitymausam.Trace;
+import com.project.mausam.api.dto.getmulticitymausam.MultiCityMausamRequest;
+import com.project.mausam.api.dto.getmulticitymausam.MultiCityMausamResponse;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamRequest;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
 import com.project.mausam.api.dto.updatecitymausam.UpdateCityMausamResponse;
@@ -41,12 +46,14 @@ public class MausamService {
 	RepositoryService repositoryService;
 	EntityMapper entityMapper;
 	ApplicationContext applicationContext;
+	MausamAsyncService mausamAsyncService;
 	@PersistenceContext
 	EntityManager entityManager;
 	
 	public MausamService(WeatherApiService weatherApiService, MausamResponseMapper mausamResponseMapper,
 			MausamRequestMapper mausamRequestMapper, MausamRepository mausamRepository, RedisCacheUtil redisCacheUtil,
-			RepositoryService repositoryService, EntityMapper entityMapper, ApplicationContext applicationContext) {
+			RepositoryService repositoryService, EntityMapper entityMapper, ApplicationContext applicationContext,
+			@Lazy MausamAsyncService mausamAsyncService) {
 		this.weatherApiService = weatherApiService;
 		this.mausamResponseMapper = mausamResponseMapper;
 		this.mausamRequestMapper = mausamRequestMapper;
@@ -55,6 +62,7 @@ public class MausamService {
 		this.repositoryService = repositoryService;
 		this.entityMapper = entityMapper;
 		this.applicationContext = applicationContext;
+		this.mausamAsyncService = mausamAsyncService;
 		System.out.println("MausamService init");
 	}
 	
@@ -139,5 +147,20 @@ public class MausamService {
 		mausamRepository.deleteById(id);
 	}
 
-	
+	public MultiCityMausamResponse getMultiCityWeather(MultiCityMausamRequest multiCityMausamRequest) {
+		final List<String> cities = multiCityMausamRequest.getCities();
+		final int units = multiCityMausamRequest.getUnits();
+		final Map<String, CityMausamResponse> cityWiseResponse = new ConcurrentHashMap<>();   // To maintain order :-  Collections.synchronizedMap(new LinkedHashMap<>())
+
+		final List<CompletableFuture<Void>> responses = cities.stream().map(city -> {
+			CityMausamRequest cityMausamRequest = new CityMausamRequest();
+			cityMausamRequest.setCityName(city);
+			cityMausamRequest.setUnits(units);
+			return mausamAsyncService.getCityWeatherAsync(cityMausamRequest).thenAccept(response -> cityWiseResponse.put(city, response));
+		}).toList();
+		CompletableFuture.allOf(responses.toArray(new CompletableFuture[0])).join();
+
+		return mausamResponseMapper.getMultiCityMausamResponse(cities, cityWiseResponse);
+	}
+
 }

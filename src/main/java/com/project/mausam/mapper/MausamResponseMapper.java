@@ -1,5 +1,9 @@
 package com.project.mausam.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 import com.project.mausam.api.dto.auth.SignUpResponse;
@@ -12,6 +16,8 @@ import com.project.mausam.api.dto.getcitymausam.Visibility;
 import com.project.mausam.api.dto.getcitymausam.Weather;
 import com.project.mausam.api.dto.getcitymausam.WeatherData;
 import com.project.mausam.api.dto.getcitymausam.Wind;
+import com.project.mausam.api.dto.getmulticitymausam.CityWeather;
+import com.project.mausam.api.dto.getmulticitymausam.MultiCityMausamResponse;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
 import com.project.mausam.entity.Mausam;
 import com.project.mausam.entity.User;
@@ -105,6 +111,19 @@ public class MausamResponseMapper {
 		signUpResponse.setUserName(savedUser.getUsername());
 		signUpResponse.setRegisterAt(savedUser.getCreatedAt());
 		return signUpResponse;
+	}
+
+	public MultiCityMausamResponse getMultiCityMausamResponse(final List<String> cities, final Map<String, CityMausamResponse> cityWiseResponse) {
+		final MultiCityMausamResponse multiCityMausamResponse = new MultiCityMausamResponse();
+		List<CityWeather> weathers = new ArrayList<>();
+		for(String city : cities) {
+			CityWeather cityWeather = new CityWeather();
+			cityWeather.setCity(city);
+			cityWeather.setCityWeather(cityWiseResponse.get(city));
+			weathers.add(cityWeather);
+		}
+		multiCityMausamResponse.setCitiesWeather(weathers);
+		return multiCityMausamResponse;
 	}
 	
 }

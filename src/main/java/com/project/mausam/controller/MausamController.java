@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.mausam.api.dto.getcitymausam.CityMausamRequest;
 import com.project.mausam.api.dto.getcitymausam.CityMausamResponse;
 import com.project.mausam.api.dto.getcitymausam.MausamApiResponse;
+import com.project.mausam.api.dto.getmulticitymausam.MultiCityMausamRequest;
+import com.project.mausam.api.dto.getmulticitymausam.MultiCityMausamResponse;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamRequest;
 import com.project.mausam.api.dto.savecitymausam.SaveCityMausamResponse;
 import com.project.mausam.api.dto.updatecitymausam.UpdateCityMausamResponse;
@@ -40,6 +42,13 @@ public class MausamController {
 	public ResponseEntity<?>getCityWeather(@Valid @RequestBody final CityMausamRequest cityMausamRequest) {
 		final CityMausamResponse cityMausamResponse = mausamService.getCityWeather(cityMausamRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, cityMausamResponse, null));
+	}
+	
+	@PostMapping("/multi-city")
+	@PreAuthorize("hasAuthority('FETCH')")
+	public ResponseEntity<?>getMultiCityWeather(@Valid @RequestBody final MultiCityMausamRequest multiCityMausamRequest) {
+		final MultiCityMausamResponse multiCityMausamResponse = mausamService.getMultiCityWeather(multiCityMausamRequest);
+		return ResponseEntity.ok(new MausamApiResponse<>(true, multiCityMausamResponse, null));
 	}
 	
 	@PostMapping("/city/save")
