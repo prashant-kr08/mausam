@@ -24,6 +24,7 @@
     <modules>
         <module>auth-service</module>
         <module>mausam-service</module>
+        <module>service-registry</module>
     </modules>
     <scm>
 		<connection/>
