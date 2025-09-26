@@ -38,7 +38,7 @@ public class MausamController {
 	}
 	
 	@PostMapping("/city")
-	@PreAuthorize("hasAuthority('FETCH')")
+//	@PreAuthorize("hasAuthority('FETCH')")
 	public ResponseEntity<?>getCityWeather(@Valid @RequestBody final CityMausamRequest cityMausamRequest) {
 		final CityMausamResponse cityMausamResponse = mausamService.getCityWeather(cityMausamRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, cityMausamResponse, null));

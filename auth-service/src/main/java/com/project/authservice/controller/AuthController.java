@@ -7,7 +7,6 @@ import com.project.authservice.dto.auth.SignUpResponse;
 import com.project.authservice.enums.UserRole;
 import com.project.authservice.service.AuthService;
 import com.project.authservice.shared.api.dto.mausam.MausamApiResponse;
-import com.project.authservice.utility.JWTUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,17 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/mausam")
+@RequestMapping("/api/auth")
 public class AuthController {
 	
 	private final AuthService authService;
 	private final AuthenticationManager authenticationManager;
-	private final JWTUtil jwtUtil;
-	
-	public AuthController(AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+
+	public AuthController(AuthService authService, AuthenticationManager authenticationManager) {
 		this.authService = authService;
 		this.authenticationManager = authenticationManager;
-		this.jwtUtil = jwtUtil;
 	}
 
 	@PostMapping("/user/signup")
@@ -55,10 +52,7 @@ public class AuthController {
 	public ResponseEntity<?> login(@RequestBody final LoginRequest loginRequest){
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-		final String token = jwtUtil.generateToken(loginRequest.getUsername());
-		final LoginResponse loginResponse = new LoginResponse();
-		loginResponse.setToken(token);
-		loginResponse.setExpiryInMinutes(10);
+		final LoginResponse loginResponse = authService.login(loginRequest);
 		return ResponseEntity.ok(new MausamApiResponse<>(true, loginResponse, null));
 	}
 }
