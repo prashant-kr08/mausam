@@ -1,0 +1,4 @@
+jwt:
+  excluded-services:
+    - /api/auth/login
+    - /api/auth/user/signup

@@ -1,0 +1,27 @@
+services:
+  endpoints:
+    - path: /api/auth/admin/register/user
+      permission: REGISTER
+      method: POST
+    - path: /api/auth/admin/register/admin
+      permission: REGISTER
+      method: POST
+
+    - path: /api/mausam/city
+      permission: FETCH
+      method: POST
+    - path: /api/mausam/multi-city
+      permission: FETCH
+      method: POST
+    - path: /api/mausam/city/save
+      permission: DBOPERATIONS
+      method: POST
+    - path: /api/mausam/saved/city/**
+      permission: DBOPERATIONS
+      method: GET
+    - path: /api/mausam/city/update/**
+      permission: DBOPERATIONS
+      method: PUT
+    - path: /api/mausam/city/delete/**
+      permission: DBOPERATIONS
+      method: DELETE
