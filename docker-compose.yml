@@ -1,0 +1,100 @@
+
+services:
+  redis:
+    image: redis:8.2
+    container_name: mausam-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - mausam-network
+
+  auth-postgres:
+    image: postgres:17
+    container_name: auth-service-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty123
+      POSTGRES_DB: user_db
+    ports:
+      - "5432:5432"
+    networks:
+      - mausam-network
+    volumes:
+      - auth-postgres-data:/var/lib/postgresql/data
+
+  mausam-postgres:
+    image: postgres:17
+    container_name: mausam-service-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty123
+      POSTGRES_DB: mausam_db
+    ports:
+      - "5433:5432"
+    networks:
+      - mausam-network
+    volumes:
+      - mausam-postgres-data:/var/lib/postgresql/data
+
+  service-registry:
+    build:
+      context: ./service-registry
+    container_name: mausam-service-registry
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    networks:
+      - mausam-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: mausam-api-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      service-registry:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    networks:
+      - mausam-network
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: mausam-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - mausam-network
+    depends_on:
+      - auth-postgres
+      - redis
+
+
+  mausam-service:
+    build:
+      context: ./mausam-service
+    container_name: mausam-mausam-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - mausam-network
+    depends_on:
+      - mausam-postgres
+      - redis
+
+networks:
+  mausam-network:
+    driver: bridge
+
+volumes:
+  auth-postgres-data:
+  mausam-postgres-data:
