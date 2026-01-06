@@ -1,9 +1,10 @@
-FROM eclipse-temurin:22-jre AS builder
+FROM eclipse-temurin:21-jre-alpine-3.23 AS base
+FROM base AS builder
 WORKDIR /build
 COPY target/api-gateway-0.0.1-SNAPSHOT.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract
 
-FROM eclipse-temurin:22-jre
+FROM base
 WORKDIR /app
 
 COPY --from=builder build/dependencies ./
